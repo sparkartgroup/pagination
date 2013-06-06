@@ -1,4 +1,4 @@
-/*
+!5
  * Storyteller Pagination Plug-in 0.0.1
  * @requires jQuery
  *
@@ -65,9 +65,34 @@
 	var IndexOffsetPagination = function( resource, attributes ) {
 		// Pagination super
 		Pagination.apply( this, arguments );
+		this.offset = attributes.offset || 0;
+		this.limit = attributes.limit;
 	};
 
-	IndexOffsetPagination.prototype = {};
+	IndexOffsetPagination.prototype = {
+
+		/**
+		 * IndexOffsetPagination#data() -> Object
+		 */
+		data: function() {
+			var data = {};
+			var parameterNames = this.attributes.parameterNames;
+			data[ parameterNames.offset ] = this.offset;
+			data[ parameterNames.limit ] = this.limit;
+			return data;
+		},
+
+		/**
+		 * IndexOffsetPagination#next() -> Deferred
+		 */
+		next: function() {
+			var self = this;
+			return this.resource.get( this.data() ).pipe(function( data ) {
+				self.offset += 1; // FIXME This should be the post number to start at! But, we need to normalize data result, or delegate it to user code to figure out.
+				return data;
+			});
+		}
+	};
 
 	/**
 	 * PagePagination
