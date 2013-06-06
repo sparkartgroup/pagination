@@ -118,7 +118,21 @@
 
 
 	/**
-	 * PaginatePlugin
+	 * PaginatePlugin( element, attributes )
+	 * - element: selector | DOM Element | jQuery
+	 * - attributes: An Array of key-value pairs below.
+	 *
+	 * `attributes`
+	 * - resource: String containing the resource URL or an Object of key-value pairs below.
+	 * - pagination: Object of key-value pairs below.
+	 *
+	 * `resource`
+	 * - url: String containing the resource URL.
+	 * - data: Object of data to be sent to the server.
+	 *
+	 * `pagination`
+	 * - type: String containing the pagination type.
+	 * - attributes: Object with specific pagination attributes.
 	 */
 
 	var paginations = {
@@ -128,7 +142,33 @@
 		"token": TokenPagination
 	};
 
-	var PaginatePlugin = function() {};
+	var PaginatePlugin = function( element, attributes ) {
+		element = $( element );
+		$.each( attributes, function() {
+			var attributes = this || {};
+			if( typeof attributes.resource == "string" ) {
+				attributes.resource = { url: attributes.resource };
+			}
+			var resource = new Resource( attributes.resource.url, attributes.resource.data );
+
+			// Augment resource with appropriate type of pagination
+			var pagination = attributes.pagination || {};
+			var paginationClass = paginations[ pagination.type ];
+			new paginationClass( resource, pagination.attributes );
+
+			// Call resource.next on "next" event,
+			// trigger success or failure in the sequence.
+			element.on( "next", function() {
+				resource.next()
+					.done(function() {
+						element.trigger( "success", arguments );
+					})
+					.fail(function() {
+						element.trigger( "error", arguments );
+					});
+			});
+		});
+	};
 
 
 	/**
