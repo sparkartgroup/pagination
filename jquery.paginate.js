@@ -18,9 +18,20 @@
 	 * A simple encapsulation.
 	 */
 
-	var Resource = function( url, data ) {};
+	var Resource = function( url, data ) {
+		this.url = url;
+		this.data = data;
+	};
 
-	Resource.prototype = {};
+	Resource.prototype = {
+
+		/**
+		 * Resource#get( data ) -> Deferred
+		 */
+		get: function( data ) {
+			return $.get( this.url, $.extend( {}, this.data, data ));
+		}
+	};
 
 
 	/**
