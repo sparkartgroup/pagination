@@ -40,7 +40,12 @@
 	 * Extends resource with .next().
 	 */
 
-	var Pagination = function( resource, attributes ) {};
+	var Pagination = function( resource, attributes ) {
+		this.resource = resource;
+		this.attributes = attributes || {};
+		this.parameter = attributes.parameter;
+		resource.next = $.proxy( this.next, this );
+	};
 
 	/**
 	 * CursoringPagination
