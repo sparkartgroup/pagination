@@ -1,4 +1,4 @@
-# pagination
+# Pagination
 
 This add-on simplifies the problem of paginating content from APIs. The following pagination methods are supported: 
 
@@ -86,11 +86,126 @@ This add-on simplifies the problem of paginating content from APIs. The followin
 Setup
 --------------------------------------------------------------------------------
 
-Pagination may be easily added to your site using [Bower][1], running the following command from the root directory of your site:
+Pagination may be easily added to your site using [Bower][bower], running the following command from the root directory of your site:
 
 ```
 $ bower install storyarc/pagination
 ```
 
+Usage
+--------------------------------------------------------------------------------
 
-[1]: http://bower.io
+The following example show how to paginate the content of three resources (tumblr, facebook, and twitter), each with its own pagination type. Whenever data is ready `.paginate` triggers the `success` or `error` events. To fetch the next page, trigger the `next` event on the `.paginate` element.
+
+```html
+<div id="my-stream"></div>
+
+<script>
+    $( "#my-stream" )
+    .paginate([{
+        resource: "tumblr-stream.json",
+        pagination: {
+            type: "index-offset",
+            attributes: {
+                limit: 15
+            }
+        }
+    }, {
+        resource: {
+            url: "facebook.json",
+            data: {foo: "bar"}
+        },
+        pagination: {
+            type: "cursoring",
+            attributes: {
+                limit: 15
+            }
+        }
+    }, {
+        resource: "twitter.json",
+        pagination: {
+            type: "cursoring",
+            attributes: {
+                parameterNames: {
+                    after: "max_id",
+                    limit: "count"
+                },
+                limit: 15
+            }
+        }
+    }])
+    .on( "success", function( event, data ) {
+        render( data ).appentTo( event.target );
+    })
+    .on( "error" , function( event, data ) {
+        log.error( data );
+    });
+
+    $( "a.next" ).click(function( event ) {
+        event.preventDefault();
+        $( "#my-stream" ).trigger( "next" );
+    });
+</script>
+```
+
+API
+--------------------------------------------------------------------------------
+
+### `.paginate( attributes )`
+
+### Attributes
+
+- resource: String containing the resource URL or an Object of key-value pairs below.
+ - url: String containing the resource URL.
+ - data: Object of data to be sent to the server (obs: pagination data will be appended to this one).
+- pagination: Object of key-value pairs below.
+ - type: String containing the pagination type.
+ - attributes: Object with specific pagination attributes.
+
+### Pagination
+
+##### Cursoring
+
+TODO
+
+##### Index/Offset
+
+type: `"index-offset"`.   
+attributes:
+- limit: The number of posts to return.
+- offset: Post number to start at (default: 0).
+- parameterNames:
+ - limit: String with the name of the limit parameter (default: "limit").
+ - offset: String with the name of the offset parameter (default: "offset").
+
+##### Numbered Pages
+
+TODO
+
+##### Token-based
+
+TODO
+
+### Events
+
+##### `.on( "success" )`
+
+Whenever `.paginate` successfully fetches pages, `success` event is triggered with received `data`.
+
+##### `.on( "error" )`
+
+Whenever `.paginate` has a failure fetching pages, `error` event is triggered with received `data`.
+
+##### `.trigger( "next" )`
+
+Whenever `.paginate` element listens for a `next` event, it fetches the appropriate next page (OBS: currently, it fetches the next page of each of the resources).
+
+### Blending Results
+
+TODO
+
+
+[bower]: http://bower.io
+[jquery]: http://jquery.com/download
+[rfc6570]: http://tools.ietf.org/html/rfc6570
+[storyteller]: http://storytellerhq.com+
