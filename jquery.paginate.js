@@ -88,7 +88,10 @@
 		next: function() {
 			var self = this;
 			return this.resource.get( this.data() ).pipe(function( data ) {
-				self.offset += 1; // FIXME This should be the post number to start at! But, we need to normalize data result, or delegate it to user code to figure out.
+				if( !data || !data.data || !$.isArray( data.data ) ) {
+					throw new Error( "expect data = {data: []}" );
+				}
+				self.offset += data.data.length;
 				return data;
 			});
 		}
