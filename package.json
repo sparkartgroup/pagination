@@ -2,7 +2,10 @@
   "name": "stream",
   "version": "0.0.1",
   "devDependencies": {
-    "grunt": "*",
-    "grunt-contrib-jshint": "*"
+    "grunt": "0.4.x",
+    "grunt-contrib-connect": "0.3.x",
+    "grunt-contrib-jshint": "0.6.x",
+    "grunt-mocha": "0.3.x",
+    "matchdep": "*"
   }
 }
