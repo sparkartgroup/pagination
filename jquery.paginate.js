@@ -64,9 +64,17 @@
 
 	var IndexOffsetPagination = function( resource, attributes ) {
 		// Pagination super
+		attributes = $.extend( true, {}, IndexOffsetPagination.defaults, attributes );
 		Pagination.apply( this, arguments );
 		this.offset = attributes.offset || 0;
 		this.limit = attributes.limit;
+	};
+
+	IndexOffsetPagination.defaults = {
+		parameterNames: {
+			offset: "offset",
+			limit: "limit"
+		}
 	};
 
 	IndexOffsetPagination.prototype = {
