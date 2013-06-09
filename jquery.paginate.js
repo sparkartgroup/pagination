@@ -152,6 +152,9 @@
 			if( typeof attributes.resource == "string" ) {
 				attributes.resource = { url: attributes.resource };
 			}
+			if( !attributes.resource || typeof attributes.resource !== "object" ) {
+				throw new Error( "unexpected attributes.resource" );
+			}
 			var resource = new Resource( attributes.resource.url, attributes.resource.data );
 
 			// Augment resource with appropriate type of pagination
