@@ -1,4 +1,4 @@
-!5
+/*
  * Storyteller Pagination Plug-in 0.0.1
  * @requires jQuery
  *
@@ -155,7 +155,12 @@
 			if( !attributes.resource || typeof attributes.resource !== "object" ) {
 				throw new Error( "unexpected attributes.resource" );
 			}
-			var resource = new Resource( attributes.resource.url, attributes.resource.data );
+			var resource;
+			if( $.isFunction( attributes.resource.get ) ) {
+				resource = attributes.resource;
+			} else {
+				resource = new Resource( attributes.resource.url, attributes.resource.data );
+			}
 
 			// Augment resource with appropriate type of pagination
 			var pagination = attributes.pagination || {};
