@@ -121,6 +121,32 @@
 					done();
 				}).trigger( "next" );
 			});
+
+			it( "should set custom `offset` and `limit` param names", function( done ) {
+				this.timeout( TIMEOUT );
+				var element = $( "<div>" ).paginate([{
+					resource: resource,
+					pagination: {
+						type: "index-offset",
+						attributes: {
+							limit: LIMIT,
+							parameterNames: {
+								offset: "myoffset",
+								limit: "mylimit"
+							}
+						}
+					}
+				}]);
+				resource.get = function( params ) {
+					expect( params ).to.include.keys( "myoffset" );
+					expect( params ).to.include.keys( "mylimit" );
+					return $.Deferred().resolve({ data: [] });
+				}
+				element.one( "success", function() {
+					done();
+				}).trigger( "next" );
+			});
+
 		});
 
 	});
