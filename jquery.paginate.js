@@ -51,7 +51,7 @@
 	 * CursoringPagination
 	 */
 
-	var CursoringPagination = function( resource, attributes ) {
+	var CursoringPagination = function(/* resource, attributes */) {
 		// Pagination super
 		Pagination.apply( this, arguments );
 	};
@@ -109,7 +109,7 @@
 	 * PagePagination
 	 */
 
-	var PagePagination = function( resource, attributes ) {
+	var PagePagination = function(/* resource, attributes */) {
 		// Pagination super
 		Pagination.apply( this, arguments );
 	};
@@ -120,7 +120,7 @@
 	 * TokenPagination
 	 */
 
-	var TokenPagination = function( resource, attributes ) {
+	var TokenPagination = function(/* resource, attributes */) {
 		// Pagination super
 		Pagination.apply( this, arguments );
 	};
