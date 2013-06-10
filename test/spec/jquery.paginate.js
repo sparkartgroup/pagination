@@ -1,6 +1,6 @@
-/*global describe, it */
-"use strict";
+/*global describe, expect, it */
 (function () {
+	"use strict";
 
 	var DummyResource = function( attributes ) {
 		attributes = attributes || { flavor: "success" };
@@ -80,7 +80,7 @@
 					expect( params.limit ).to.be.a( "number" );
 					expect( params.limit ).to.equal( LIMIT );
 					return $.Deferred().resolve({ data: [] });
-				}
+				};
 				element.one( "success", function() {
 					done();
 				}).trigger( "next" );
@@ -92,7 +92,7 @@
 					expect( params.offset ).to.be.a( "number" );
 					expect( params.offset ).to.equal( 0 );
 					return $.Deferred().resolve({ data: new Array( LIMIT ) });
-				}
+				};
 				element.one( "success", function() {
 					done();
 				}).trigger( "next" );
@@ -104,7 +104,7 @@
 					expect( params.offset ).to.be.a( "number" );
 					expect( params.offset ).to.equal( LIMIT );
 					return $.Deferred().resolve({ data: new Array( A_LESS_THAN_LIMIT ) });
-				}
+				};
 				element.one( "success", function() {
 					done();
 				}).trigger( "next" );
@@ -116,7 +116,7 @@
 					expect( params.offset ).to.be.a( "number" );
 					expect( params.offset ).to.equal( LIMIT + A_LESS_THAN_LIMIT );
 					return $.Deferred().resolve({ data: [] });
-				}
+				};
 				element.one( "success", function() {
 					done();
 				}).trigger( "next" );
@@ -141,7 +141,7 @@
 					expect( params ).to.include.keys( "myoffset" );
 					expect( params ).to.include.keys( "mylimit" );
 					return $.Deferred().resolve({ data: [] });
-				}
+				};
 				element.one( "success", function() {
 					done();
 				}).trigger( "next" );
