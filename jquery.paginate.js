@@ -65,12 +65,21 @@
 	var IndexOffsetPagination = function( resource, attributes ) {
 		// Pagination super
 		attributes = $.extend( true, {}, IndexOffsetPagination.defaults, attributes );
+
+		if( !$.isFunction( attributes.count ) ) {
+			throw new Error( "attributes.count not a function" );
+		}
+
 		Pagination.apply( this, arguments );
-		this.offset = attributes.offset || 0;
+		this.count = attributes.count;
 		this.limit = attributes.limit;
+		this.offset = attributes.offset || 0;
 	};
 
 	IndexOffsetPagination.defaults = {
+		count: function( data ) {
+			return data.data.length;
+		},
 		parameterNames: {
 			offset: "offset",
 			limit: "limit"
@@ -96,10 +105,7 @@
 		next: function() {
 			var self = this;
 			return this.resource.get( this.data() ).pipe(function( data ) {
-				if( !data || !data.data || !$.isArray( data.data ) ) {
-					throw new Error( "expect data = {data: []}" );
-				}
-				self.offset += data.data.length;
+				self.offset += self.count( data );
 				return data;
 			});
 		}
