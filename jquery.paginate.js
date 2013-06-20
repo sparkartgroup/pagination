@@ -41,10 +41,19 @@
 	 */
 
 	var Pagination = function( resource, attributes ) {
+		var self = this;
+		var ongoingNext = null;
 		this.resource = resource;
 		this.attributes = attributes || {};
 		this.parameter = attributes.parameter;
-		resource.next = $.proxy( this.next, this );
+		resource.next = function() {
+			if( ongoingNext ) {
+				return ongoingNext;
+			}
+			return ongoingNext = self.next.call( self ).always(function() {
+				ongoingNext = null;
+			});
+		};
 	};
 
 	/**
