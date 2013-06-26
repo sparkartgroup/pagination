@@ -10,5 +10,9 @@
   "smarttabs": false,
   "trailing": true,
   "undef": true,
-  "unused": true
+  "unused": true,
+  "globals": {
+    "define": false,
+    "require": false
+  }
 }

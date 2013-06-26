@@ -95,55 +95,64 @@ $ bower install storyarc/pagination
 Usage
 --------------------------------------------------------------------------------
 
-The following example show how to paginate the content of three resources (tumblr, facebook, and twitter), each with its own pagination type. Whenever data is ready `.paginate` triggers the `success` or `error` events. To fetch the next page, trigger the `next` event on the `.paginate` element.
+The following example shows how to paginate the content your a Tumblr blog proxied by your server via `GET /tumblr.json`. Whenever data is ready `.paginate` triggers the `success` or `error` events.
 
 ```html
-<div id="my-stream"></div>
+<div id="tumblr-stream">
+    <button type="button">More</button>
+</div>
 
 <script>
-    $( "#my-stream" )
-    .paginate([{
-        resource: "tumblr-stream.json",
-        pagination: {
-            type: "index-offset",
-            attributes: {
-                limit: 15
-            }
-        }
-    }, {
-        resource: {
-            url: "facebook.json",
-            data: {foo: "bar"}
-        },
-        pagination: {
-            type: "cursoring",
-            attributes: {
-                limit: 15
-            }
-        }
-    }, {
-        resource: "twitter.json",
-        pagination: {
-            type: "cursoring",
-            attributes: {
-                parameterNames: {
-                    after: "max_id",
-                    limit: "count"
-                },
-                limit: 15
-            }
-        }
-    }])
+    var Tumblr = Resource.extend({
+        url: "/tumblr.json",
+        pagination: IndexOffsetPagination
+    });
+
+    $( "#tumblr-stream" )
     .on( "success", function( event, data ) {
         render( data ).appentTo( event.target );
     })
     .on( "error" , function( event, data ) {
         log.error( data );
+    })
+    .paginate({
+        resource: new Tumblr(),
+        moreButton: "button"
+    });
+</script>
+```
+
+If you need to customize your pagination parameters, simply extend a paginantion type and create your own custom one.
+
+```html
+<div id="twitter-stream">
+    <button type="button">More</button>
+</div>
+
+<script>
+    var TwitterPagination = CursoringPagination.extend({
+        parameterNames: {
+            after: "max_id",
+            limit: "count"
+        },
+        limit: 15
     });
 
-    $( "a.next" ).click(function( event ) {
-        event.preventDefault();
-        $( "#my-stream" ).trigger( "next" );
+    var Twitter = Resource.extend({
+        url: "/twitter.json",
+        pagination: TwitterPagination
+    });
+
+    $( "#twitter-stream" )
+    .on( "success", function( event, data ) {
+        render( data ).appentTo( event.target );
+    })
+    .on( "error" , function( event, data ) {
+        log.error( data );
+    })
+    .paginate({
+        resource: new Twitter(),
+        moreButton: "button"
     });
 </script>
 ```
@@ -151,16 +160,53 @@ The following example show how to paginate the content of three resources (tumbl
 API
 --------------------------------------------------------------------------------
 
-### `.paginate( attributes )`
+The building blocks.
 
-### Attributes
+### `$.fn.paginate`
 
-- resource: String containing the resource URL or an Object of key-value pairs below.
+The jQuery plugin `$.fn.paginate` is a widget that binds a resource with DOM elements. It's a helper that maps user events (via DOM events, eg. `click`) into resource actions (eg. `resource.next()`), or resource events (eg. data fetched) into DOM events (eg. the custom `success`/`error` events).
+
+```javascript
+$( element ).paginate( attributes );
+```
+
+The attributes are:
+- resource: a [Resource](#resource) instance.
+- moreButton: A selector, or DOM Element, or jQuery object that upon click will trigger the next page (by internally calling `resource.next()`).
+
+The plugin fetches the 1st page on initialization, and it pre-caches the next ones in advance (one at a time).
+
+*Future plan: allow different types of pagination interfaces (eg. auto paginate on scroll).*
+
+Events:
+
+##### `.on( "success" )`
+
+Whenever `.paginate` successfully fetches pages, `success` event is triggered with received `data`.
+
+##### `.on( "error" )`
+
+Whenever `.paginate` has a failure fetching pages, `error` event is triggered with received `data`.
+
+### Resource
+
+Handles resource's data-fetch. It encapsulates the resources attributes (url, and pagination type) and offers a simple set of methods to manage it: `.get()`, and `.next()` (via pagination's instance `.next()`).
+
+```javascript
+var myResource = new Resource( attributes );
+```
+
+Create your own custom resource by extending Resource with custom attributes. The new class will use such attributes as default. (note, you are also allowed to extend your just extended class and so on.)
+
+```javascript
+var MyResource = Resource.extend( attributes );
+var myResource = new MyResource();
+```
+
+The attributes are:
  - url: String containing the resource URL.
- - data: Object of data to be sent to the server (obs: pagination data will be appended to this one).
-- pagination: Object of key-value pairs below.
- - type: String containing the pagination type.
- - attributes: Object with specific pagination attributes.
+ - params: key-value pairs of params to be sent to the server on every request (note that pagination params will be appended to this one).
+ - pagination: a [Pagination](pagination) class.
 
 ### Pagination
 
@@ -170,9 +216,25 @@ TODO
 
 ##### Index/Offset
 
-type: `"index-offset"`.   
-attributes:
-- limit: The number of posts to return.
+Handles the index/offset pagination logic and exports `.next()` method used internally by [Resource](resource).
+
+```javascript
+var myResource = new Resource({
+    pagination: IndexOffsetPagination( attributes )
+});
+```
+
+Create your own custom index/offset pagination by extending IndexOffsetPagination with custom attributes. The new class will use such attributes as default. (note, you are also allowed to extend your just extended class and so on.)
+
+```javascript
+var MyPagination = IndexOffsetPagination.extend( attributes );
+var myResource = new Resource({
+    pagination: MyPagination
+});
+```
+
+The attributes are:
+- limit: The number of posts to return (default: 15).
 - offset: Post number to start at (default: 0).
 - parameterNames:
  - limit: String with the name of the limit parameter (default: "limit").
@@ -186,21 +248,7 @@ TODO
 
 TODO
 
-### Events
-
-##### `.on( "success" )`
-
-Whenever `.paginate` successfully fetches pages, `success` event is triggered with received `data`.
-
-##### `.on( "error" )`
-
-Whenever `.paginate` has a failure fetching pages, `error` event is triggered with received `data`.
-
-##### `.trigger( "next" )`
-
-Whenever `.paginate` element listens for a `next` event, it fetches the appropriate next page (OBS: currently, it fetches the next page of each of the resources).
-
-### Blending Results
+### Blending Resources
 
 TODO
 

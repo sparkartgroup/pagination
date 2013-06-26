@@ -7,28 +7,14 @@
 </head>
 <body>
     <div id="mocha"></div>
-    <script src="lib/jquery/jquery.js"></script>
     <script src="lib/mocha/mocha.js"></script>
     <script>mocha.setup( "bdd" )</script>
 
-    <!-- assertion framework -->
     <script src="lib/chai.js"></script>
     <script>
     var expect = chai.expect;
     </script>
 
-    <!-- source files -->
-    <script src="jquery.paginate.js"></script>
-
-    <!-- spec files -->
-    <script src="spec/jquery.paginate.js"></script>
-
-    <script>
-    // If tests run in a real browser
-    if( navigator.userAgent.indexOf( "PhantomJS" ) < 0 ) {
-      mocha.globals([ "jQuery" ]);
-      mocha.run();
-    }
-    </script>
+    <script data-main="main.js" src="lib/requirejs/require.js"></script>
 </body>
 </html>
