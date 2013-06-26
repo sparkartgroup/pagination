@@ -1,6 +1,6 @@
-"use strict";
-
+/*global module*/
 module.exports = function( grunt ) {
+"use strict";
 
   var mountFolder = function ( connect, path ) {
     return connect.static( require( "path" ).resolve( path ) );
@@ -28,13 +28,13 @@ module.exports = function( grunt ) {
       options: {
         jshintrc: ".jshintrc"
       },
-      paginate: "jquery.paginate.js",
+      gruntfile: [ "Gruntfile.js" ],
+      pagination: [ "*.js", "!Gruntfile.js" ],
       test: "test/spec/**/*.js"
     },
     mocha: {
       all: {
         options: {
-          run: true,
           urls: [ "http://localhost:<%= connect.options.port %>/index.html" ]
         }
       }
