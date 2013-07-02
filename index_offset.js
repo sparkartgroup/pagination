@@ -42,13 +42,13 @@ define(["pagination/pagination", "pagination/util"], function(Pagination, util) 
 		},
 
 		/**
-		 * IndexOffsetPagination#data() -> Object
+		 * IndexOffsetPagination#params() -> Object
 		 */
-		data: function() {
-			var data = {};
-			data[ this.parameterNames.offset ] = this.offset;
-			data[ this.parameterNames.limit ] = this.limit;
-			return data;
+		params: function() {
+			var params = {};
+			params[ this.parameterNames.offset ] = this.offset;
+			params[ this.parameterNames.limit ] = this.limit;
+			return params;
 		},
 
 		/**
@@ -56,7 +56,7 @@ define(["pagination/pagination", "pagination/util"], function(Pagination, util) 
 		 */
 		next: function() {
 			var self = this;
-			return this.resource.get(this.data()).pipe(function(data) {
+			return this.resource.get(this.params()).pipe(function(data) {
 				self.offset += self.count(data);
 				return data;
 			});
