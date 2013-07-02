@@ -49,11 +49,11 @@ define(["jquery"], function($) {
 			cache
 				.done(function() {
 					element.trigger("success", arguments);
+					cache = resource.next();
 				})
 				.fail(function() {
 					element.trigger("error", arguments);
 				});
-			cache = resource.next();
 		};
 
 		// More button
