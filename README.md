@@ -7,7 +7,7 @@ This add-on simplifies the problem of paginating content from APIs. The followin
  - **Cursoring:** Specifies ranges of IDs or timestamps rather than pre-computing “pages” of results.
  - **Token-based:** Associates each page of content with a unique token, provided in each response for use in the next request.
 
-### Popular Examples
+## Popular Examples
 
 <table>
     <thead>
@@ -162,7 +162,7 @@ API
 
 The building blocks.
 
-### `$.fn.paginate`
+## `$.fn.paginate`
 
 The jQuery plugin `$.fn.paginate` is a widget that binds a resource with DOM elements. It's a helper that maps user events (via DOM events, eg. `click`) into resource actions (eg. `resource.next()`), or resource events (eg. data fetched) into DOM events (eg. the custom `success`/`error` events).
 
@@ -180,15 +180,15 @@ The plugin fetches the 1st page on initialization, and it pre-caches the next on
 
 Events:
 
-##### `.on( "success" )`
+### `.on( "success" )`
 
 Whenever `.paginate` successfully fetches pages, `success` event is triggered with received `data`.
 
-##### `.on( "error" )`
+### `.on( "error" )`
 
 Whenever `.paginate` has a failure fetching pages, `error` event is triggered with received `data`.
 
-### Resource
+## Resource
 
 Handles resource's data-fetch. It encapsulates the resources attributes (url, and pagination type) and offers a simple set of methods to manage it: `.get()`, and `.next()` (via pagination's instance `.next()`).
 
@@ -208,21 +208,21 @@ The attributes are:
  - params: key-value pairs of params to be sent to the server on every request (note that pagination params will be appended to this one).
  - pagination: a [Pagination](pagination) class.
 
-##### `resource.get( params )`
+### `resource.get( params )`
 
 `params` are optional parameters to include in the GET querystring. This method returns a Deferred object of the request.
 
-### Pagination
+## Pagination
 
 Handles the pagination logic and exports `.next()` method used internally by [Resource](resource). This class is extended by the specific types of paginations below. See their respective docs for more information of each type.
 
-##### `pagination.next()`
+### `pagination.next()`
 
 Returns a Deferred object of the request (made internally via resource). All pagination logic is done internally, and any needed pagination-querystring is appended automatically.
 
 `.next()` prevents any possible while-the-page-is-still-being-fetched further calls. In that case, it returns the same on-progress Deferred object.
 
-##### Cursoring
+### Cursoring
 
 Pagination extended with the cursoring pagination logic.
 
@@ -249,7 +249,7 @@ var myResource = new Resource({
 ```
 
 
-##### Index/Offset
+### Index/Offset
 
 Pagination extended with the index/offset pagination logic.
 
@@ -275,15 +275,15 @@ var myResource = new Resource({
 });
 ```
 
-##### Numbered Pages
+### Numbered Pages
 
 TODO
 
-##### Token-based
+### Token-based
 
 TODO
 
-### Blending Resources
+## Blending Resources
 
 Blend several resources into a single "virtual" one with BlendResources.
 
@@ -313,11 +313,11 @@ $( "#stream" )
 </script>
 ```
 
-##### `blendedResource.get( params )`
+### `blendedResource.get( params )`
 
 Calls `.get( params )` of all resources in bulk and returns a merged Deferred object that succeeds when *all* individuals succeeds, and fails when *any* individual fails.
 
-On success, returns the merged data as a key-value pairs where key is the resource's `name`, ane value is the resource's data. Eg:
+On success, returns the merged data as a key-value pairs where key is the resource's `name`, ane value is the resource's data. Eg.
 ```
 {
     tumblr: {...},
@@ -326,7 +326,7 @@ On success, returns the merged data as a key-value pairs where key is the resour
 }
 ```
 
-##### `blendedResource.next()`
+### `blendedResource.next()`
 
 Calls `.next()` of all resources in bulk and returns a merged Deferred object that succeeds when *all* individuals succeeds, and fails when *any* individual fails.
 
