@@ -103,12 +103,12 @@ The following example shows how to paginate the content your a Tumblr blog proxi
 </div>
 
 <script>
-    var Tumblr = Resource.extend({
-        url: "/tumblr.json",
-        pagination: IndexOffsetPagination
-    });
+var Tumblr = Resource.extend({
+    url: "/tumblr.json",
+    pagination: IndexOffsetPagination
+});
 
-    $( "#tumblr-stream" )
+$( "#tumblr-stream" )
     .on( "success", function( event, data ) {
         render( data ).appentTo( event.target );
     })
@@ -130,30 +130,30 @@ If you need to customize your pagination parameters, simply extend a paginantion
 </div>
 
 <script>
-    var TwitterPagination = CursoringPagination.extend({
-        parameterNames: {
-            after: "max_id",
-            limit: "count"
-        },
-        limit: 15
-    });
+var TwitterPagination = CursoringPagination.extend({
+    parameterNames: {
+        after: "max_id",
+        limit: "count"
+    },
+    limit: 15
+});
 
-    var Twitter = Resource.extend({
-        url: "/twitter.json",
-        pagination: TwitterPagination
-    });
+var Twitter = Resource.extend({
+    url: "/twitter.json",
+    pagination: TwitterPagination
+});
 
-    $( "#twitter-stream" )
-    .on( "success", function( event, data ) {
-        render( data ).appentTo( event.target );
-    })
-    .on( "error" , function( event, data ) {
-        log.error( data );
-    })
-    .paginate({
-        resource: new Twitter(),
-        moreButton: "button"
-    });
+$( "#twitter-stream" )
+.on( "success", function( event, data ) {
+    render( data ).appentTo( event.target );
+})
+.on( "error" , function( event, data ) {
+    log.error( data );
+})
+.paginate({
+    resource: new Twitter(),
+    moreButton: "button"
+});
 </script>
 ```
 
@@ -208,21 +208,63 @@ The attributes are:
  - params: key-value pairs of params to be sent to the server on every request (note that pagination params will be appended to this one).
  - pagination: a [Pagination](pagination) class.
 
+##### `resource.get( params )`
+
+`params` are optional parameters to include in the GET querystring. This method returns a Deferred object of the request.
+
 ### Pagination
+
+Handles the pagination logic and exports `.next()` method used internally by [Resource](resource). This class is extended by the specific types of paginations below. See their respective docs for more information of each type.
+
+##### `pagination.next()`
+
+Returns a Deferred object of the request (made internally via resource). All pagination logic is done internally, and any needed pagination-querystring is appended automatically.
+
+`.next()` prevents any possible while-the-page-is-still-being-fetched further calls. In that case, it returns the same on-progress Deferred object.
 
 ##### Cursoring
 
-TODO
+Pagination extended with the cursoring pagination logic.
+
+```javascript
+var myResource = new Resource({
+    pagination: CursoringPagination( attributes )
+});
+```
+
+The attributes are:
+- after: The cursor that points to the end of the page. Next page will continue from this point (default: null).
+- limit: The number of posts to return (default: null).
+- parameterNames:
+ - after: String with the name of the after parameter (default: "after").
+ - limit: String with the name of the limit parameter (default: "limit").
+
+Create your own custom cursoring pagination by extending CursoringPagination with custom attributes. The new class will use such attributes as default. (note, you are also allowed to extend your just extended class and so on.)
+
+```javascript
+var MyPagination = CursoringPagination.extend( attributes );
+var myResource = new Resource({
+    pagination: MyPagination
+});
+```
+
 
 ##### Index/Offset
 
-Handles the index/offset pagination logic and exports `.next()` method used internally by [Resource](resource).
+Pagination extended with the index/offset pagination logic.
 
 ```javascript
 var myResource = new Resource({
     pagination: IndexOffsetPagination( attributes )
 });
 ```
+
+The attributes are:
+- limit: The number of posts to return (default: null).
+- offset: Post number to start at (default: 0).
+- parameterNames:
+ - limit: String with the name of the limit parameter (default: "limit").
+ - offset: String with the name of the offset parameter (default: "offset").
 
 Create your own custom index/offset pagination by extending IndexOffsetPagination with custom attributes. The new class will use such attributes as default. (note, you are also allowed to extend your just extended class and so on.)
 
@@ -232,13 +274,6 @@ var myResource = new Resource({
     pagination: MyPagination
 });
 ```
-
-The attributes are:
-- limit: The number of posts to return (default: 15).
-- offset: Post number to start at (default: 0).
-- parameterNames:
- - limit: String with the name of the limit parameter (default: "limit").
- - offset: String with the name of the offset parameter (default: "offset").
 
 ##### Numbered Pages
 
@@ -250,8 +285,52 @@ TODO
 
 ### Blending Resources
 
-TODO
+Blend several resources into a single "virtual" one with BlendResources.
 
+```html
+<div id="stream">
+    <button type="button">More</button>
+</div>
+
+<script>
+var blendedResource = new BlendResources({
+    tumblr: new Tumblr(),
+    twitter: new Twitter(),
+    facebook: new Facebook()
+});
+
+$( "#stream" )
+    .on( "success", function( event, data ) {
+        render( data ).appentTo( event.target );
+    })
+    .on( "error" , function( event, data ) {
+        log.error( data );
+    })
+    .paginate({
+        resource: blendedResource,
+        moreButton: "button"
+    });
+</script>
+```
+
+##### `blendedResource.get( params )`
+
+Calls `.get( params )` of all resources in bulk and returns a merged Deferred object that succeeds when *all* individuals succeeds, and fails when *any* individual fails.
+
+On success, returns the merged data as a key-value pairs where key is the resource's `name`, ane value is the resource's data. Eg:
+```
+{
+    tumblr: {...},
+    twitter: {...},
+    facebook: {...}
+}
+```
+
+##### `blendedResource.next()`
+
+Calls `.next()` of all resources in bulk and returns a merged Deferred object that succeeds when *all* individuals succeeds, and fails when *any* individual fails.
+
+Returns data in the same format as above.
 
 [bower]: http://bower.io
 [jquery]: http://jquery.com/download
