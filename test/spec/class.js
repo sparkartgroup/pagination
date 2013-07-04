@@ -1,3 +1,4 @@
+/* jshint expr: true */
 /*global describe, expect, it */
 define([
 	"pagination/class"
