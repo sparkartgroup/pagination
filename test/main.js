@@ -8,6 +8,7 @@ require.config({
 
 require([
 	"spec/class",
+	"spec/cursoring",
 	"spec/index_offset",
 	"spec/jquery.paginate"
 ], function() {
