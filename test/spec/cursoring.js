@@ -1,3 +1,4 @@
+/* jshint expr: true */
 /*global describe, expect, it */
 define([
 	"dummy_resource",
@@ -8,7 +9,6 @@ define([
 
 		var TIMEOUT = 1000;
 		var LIMIT = 15;
-		var A_LESS_THAN_LIMIT = 3;
 
 		var defaultData = {
 			data: [],
@@ -72,9 +72,9 @@ define([
 		});
 
 		var pagination2 = new Pagination2(resource);
-		resource.get = function( params ) {
+		resource.get = function() {
 			return $.Deferred().resolve(defaultData);
-		}
+		};
 		pagination2.next();
 
 		it( "should set custom `after` and `limit` param names", function( done ){
