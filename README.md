@@ -249,7 +249,6 @@ var myResource = new Resource({
 });
 ```
 
-
 ### Index/Offset
 
 Pagination extended with the index/offset pagination logic.
@@ -279,7 +278,30 @@ var myResource = new Resource({
 
 ### Numbered Pages
 
-TODO
+Pagination extended with the numbered page pagination logic.
+
+```javascript
+var myResource = new Resource({
+    pagination: NumberedPagePagination( attributes )
+});
+```
+
+The attributes are:
+- continue: A function that accepts one argument: the fetched data; and returns a boolean telling whether or not there are next pages.
+- page: Page number to start at (default: 1).
+- per_page: The number of items to return per page (default: null).
+- parameterNames:
+ - page: String with the name of the page parameter (default: "page").
+ - perPage: String with the name of the perPage parameter (default: "per_page").
+
+Create your own custom numbered page pagination by extending NumberedPagePagination with custom attributes. The new class will use such attributes as default. (note, you are also allowed to extend your just extended class and so on.)
+
+```javascript
+var MyPagination = IndexOffsetPagination.extend( attributes );
+var myResource = new Resource({
+    pagination: MyPagination
+});
+```
 
 ### Token-based
 
@@ -307,7 +329,6 @@ var myResource = new Resource({
     pagination: MyPagination
 });
 ```
-
 
 ## Blending Resources
 
