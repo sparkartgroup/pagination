@@ -29,7 +29,7 @@ define([
 		it( "should not set `after` param on 1st page", function( done ){
 			this.timeout( TIMEOUT );
 			resource.get = function( params ){
-				expect( params.after ).to.be.an( "undefined" );
+				expect( params.after ).to.be.undefined;
 				return $.Deferred().resolve(defaultData);
 			};
 			pagination.next().done(function(){
