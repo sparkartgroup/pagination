@@ -13,6 +13,7 @@ require([
 	/* Paginations */
 	"spec/cursoring",
 	"spec/index_offset",
+	"spec/numbered_page",
 	"spec/token",
 
 	/* Blend Resources */
