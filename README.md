@@ -281,7 +281,31 @@ TODO
 
 ### Token-based
 
-TODO
+Pagination extended with the token pagination logic.
+
+```javascript
+var myResource = new Resource({
+    pagination: TokenPagination( attributes )
+});
+```
+
+The attributes are:
+- getNextToken: A function that accepts one argument: the fetched data; and returns the next token.
+- token: The token of the next page (default: null).
+- limit: The number of posts to return (default: null).
+- parameterNames:
+ - token: String with the name of the after parameter (default: "token").
+ - limit: String with the name of the limit parameter (default: "limit").
+
+Create your own custom token pagination by extending TokenPagination with custom attributes. The new class will use such attributes as default. (note, you are also allowed to extend your just extended class and so on.)
+
+```javascript
+var MyPagination = TokenPagination.extend( attributes );
+var myResource = new Resource({
+    pagination: MyPagination
+});
+```
+
 
 ## Blending Resources
 
