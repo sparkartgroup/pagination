@@ -234,6 +234,7 @@ var myResource = new Resource({
 
 The attributes are:
 - after: The cursor that points to the end of the page. Next page will continue from this point (default: null).
+- getAfter: A function that accepts one argument: the fetched data; and returns the cursor from which the next page will continue.
 - limit: The number of posts to return (default: null).
 - parameterNames:
  - after: String with the name of the after parameter (default: "after").
@@ -260,6 +261,7 @@ var myResource = new Resource({
 ```
 
 The attributes are:
+- count: A function that accepts one argument: the fetched data; and returns the number of fetched items.
 - limit: The number of posts to return (default: null).
 - offset: Post number to start at (default: 0).
 - parameterNames:
