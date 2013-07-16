@@ -122,7 +122,7 @@ $( "#tumblr-stream" )
 </script>
 ```
 
-If you need to customize your pagination parameters, simply extend a paginantion type and create your own custom one.
+If you need to customize your pagination parameters, simply extend a pagination type and create your own custom one.
 
 ```html
 <div id="twitter-stream">
