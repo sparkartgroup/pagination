@@ -95,7 +95,7 @@ $ bower install storyarc/pagination
 Usage
 --------------------------------------------------------------------------------
 
-The following example shows how to paginate the content your a Tumblr blog proxied by your server via `GET /tumblr.json`. Whenever data is ready `.paginate` triggers the `success` or `error` events.
+The following example shows how to paginate the content of a proxied Tumblr blog resource, fetched via `GET /tumblr.json`. Whenever data is ready `.paginate` triggers the `success` or `error` events.
 
 ```html
 <div id="tumblr-stream">
